@@ -2,6 +2,7 @@ import { useState } from "react";
 import { LinkDashboard } from "@/components/LinkDashboard";
 import { AddLinkDialog } from "@/components/AddLinkDialog";
 import { EditLinkDialog } from "@/components/EditLinkDialog";
+import { CategoryManager } from "@/components/CategoryManager";
 import { Button } from "@/components/ui/button";
 import { Plus, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -61,7 +62,7 @@ const Index = () => {
     }
   ]);
 
-  const [categories] = useState<Category[]>([
+  const [categories, setCategories] = useState<Category[]>([
     { id: "1", name: "Development", color: "#3b82f6" },
     { id: "2", name: "Research", color: "#10b981" },
     { id: "3", name: "Design", color: "#f59e0b" },
@@ -98,6 +99,52 @@ const Index = () => {
     setIsEditDialogOpen(true);
   };
 
+  // Category management functions
+  const addCategory = (newCategory: Omit<Category, "id">) => {
+    const category: Category = {
+      ...newCategory,
+      id: Date.now().toString()
+    };
+    setCategories(prev => [...prev, category]);
+  };
+
+  const updateCategory = (id: string, updates: Partial<Category>) => {
+    setCategories(prev => prev.map(category => 
+      category.id === id ? { ...category, ...updates } : category
+    ));
+    
+    // Update links that use this category
+    if (updates.name) {
+      const oldCategory = categories.find(c => c.id === id);
+      if (oldCategory) {
+        setLinks(prev => prev.map(link => 
+          link.category === oldCategory.name ? { ...link, category: updates.name! } : link
+        ));
+      }
+    }
+  };
+
+  const deleteCategory = (id: string) => {
+    const categoryToDelete = categories.find(c => c.id === id);
+    if (categoryToDelete) {
+      // Update links that use this category to use "Uncategorized"
+      setLinks(prev => prev.map(link => 
+        link.category === categoryToDelete.name ? { ...link, category: "Uncategorized" } : link
+      ));
+      
+      // Add "Uncategorized" category if it doesn't exist
+      if (!categories.some(c => c.name === "Uncategorized")) {
+        setCategories(prev => [...prev.filter(c => c.id !== id), {
+          id: "uncategorized",
+          name: "Uncategorized",
+          color: "#6b7280"
+        }]);
+      } else {
+        setCategories(prev => prev.filter(c => c.id !== id));
+      }
+    }
+  };
+
   const filteredLinks = links.filter(link => {
     if (!searchQuery) return true;
     
@@ -123,10 +170,18 @@ const Index = () => {
                 Your digital reference library for organizing and discovering links
               </p>
             </div>
-            <Button onClick={() => setIsAddDialogOpen(true)} className="gap-2">
-              <Plus className="h-4 w-4" />
-              Add Link
-            </Button>
+            <div className="flex gap-2">
+              <CategoryManager
+                categories={categories}
+                onAddCategory={addCategory}
+                onUpdateCategory={updateCategory}
+                onDeleteCategory={deleteCategory}
+              />
+              <Button onClick={() => setIsAddDialogOpen(true)} className="gap-2">
+                <Plus className="h-4 w-4" />
+                Add Link
+              </Button>
+            </div>
           </div>
 
           {/* Search */}
