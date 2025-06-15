@@ -1,38 +1,25 @@
 
 # LinkWise
 
+![LinkWise Logo](public/lovable-uploads/80f7fd34-d116-4d5e-8fdc-9992eb6c23ee.png)
+
 A modern digital reference library for organizing and discovering your links.
 
 ## Features
 
-- **Smart Organization**: Categorize and tag your links for easy discovery
-- **Advanced Search**: Find links quickly with powerful search functionality
-- **Priority Management**: Mark important links for quick access
-- **Analytics Dashboard**: Track your link collection with insightful statistics
+- Smart link organization with categories and tags
+- Advanced search functionality
+- Priority management for important links
+- Analytics dashboard with insights
 
-## Getting Started
+## Quick Start
 
-### Prerequisites
-
-- Node.js & npm installed
-
-### Installation
-
-```sh
-# Clone the repository
-git clone <YOUR_GIT_URL>
-
-# Navigate to the project directory
-cd <YOUR_PROJECT_NAME>
-
-# Install dependencies
+```bash
 npm install
-
-# Start the development server
 npm run dev
 ```
 
-## Technologies
+## Tech Stack
 
 - React + TypeScript
 - Tailwind CSS
@@ -40,4 +27,4 @@ npm run dev
 
 ## License
 
-This project is licensed under the MIT License.
+MIT License
