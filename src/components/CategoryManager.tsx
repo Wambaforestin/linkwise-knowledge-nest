@@ -15,7 +15,7 @@ import {
   AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
-  DialogDescription,
+  AlertDialogDescription,
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
@@ -139,9 +139,9 @@ export const CategoryManager = ({
                         <AlertDialogContent>
                           <AlertDialogHeader>
                             <AlertDialogTitle>Delete Category</AlertDialogTitle>
-                            <DialogDescription>
+                            <AlertDialogDescription>
                               Are you sure you want to delete "{category.name}"? This action cannot be undone.
-                            </DialogDescription>
+                            </AlertDialogDescription>
                           </AlertDialogHeader>
                           <div className="flex justify-end gap-2">
                             <AlertDialogCancel>Cancel</AlertDialogCancel>
