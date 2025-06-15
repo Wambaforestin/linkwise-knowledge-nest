@@ -1,7 +1,7 @@
-
 import { useState } from "react";
 import { LinkDashboard } from "@/components/LinkDashboard";
 import { AddLinkDialog } from "@/components/AddLinkDialog";
+import { EditLinkDialog } from "@/components/EditLinkDialog";
 import { Button } from "@/components/ui/button";
 import { Plus, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -70,6 +70,9 @@ const Index = () => {
 
   const [searchQuery, setSearchQuery] = useState("");
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  
+  const [editingLink, setEditingLink] = useState<Link | null>(null);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
 
   const addLink = (newLink: Omit<Link, "id" | "dateAdded">) => {
     const link: Link = {
@@ -88,6 +91,11 @@ const Index = () => {
 
   const deleteLink = (id: string) => {
     setLinks(prev => prev.filter(link => link.id !== id));
+  };
+
+  const handleEditLink = (link: Link) => {
+    setEditingLink(link);
+    setIsEditDialogOpen(true);
   };
 
   const filteredLinks = links.filter(link => {
@@ -163,6 +171,7 @@ const Index = () => {
           categories={categories}
           onUpdateLink={updateLink}
           onDeleteLink={deleteLink}
+          onEditLink={handleEditLink}
         />
 
         {/* Add Link Dialog */}
@@ -170,6 +179,15 @@ const Index = () => {
           open={isAddDialogOpen}
           onOpenChange={setIsAddDialogOpen}
           onAddLink={addLink}
+          categories={categories}
+        />
+
+        {/* Edit Link Dialog */}
+        <EditLinkDialog
+          open={isEditDialogOpen}
+          onOpenChange={setIsEditDialogOpen}
+          link={editingLink}
+          onUpdateLink={updateLink}
           categories={categories}
         />
       </div>

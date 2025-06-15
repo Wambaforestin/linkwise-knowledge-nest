@@ -23,9 +23,10 @@ interface LinkTableProps {
   links: Link[];
   onUpdateLink: (id: string, updates: Partial<Link>) => void;
   onDeleteLink: (id: string) => void;
+  onEditLink: (link: Link) => void;
 }
 
-export const LinkTable = ({ links, onUpdateLink, onDeleteLink }: LinkTableProps) => {
+export const LinkTable = ({ links, onUpdateLink, onDeleteLink, onEditLink }: LinkTableProps) => {
   const getPriorityColor = (priority: string) => {
     switch (priority) {
       case "high": return "destructive";
@@ -111,7 +112,7 @@ export const LinkTable = ({ links, onUpdateLink, onDeleteLink }: LinkTableProps)
                       <ExternalLink className="mr-2 h-4 w-4" />
                       Open Link
                     </DropdownMenuItem>
-                    <DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => onEditLink(link)}>
                       <Edit className="mr-2 h-4 w-4" />
                       Edit
                     </DropdownMenuItem>

@@ -1,4 +1,5 @@
 
+import { useState } from "react";
 import { Link } from "@/pages/Index";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -16,9 +17,10 @@ interface LinkCardsProps {
   links: Link[];
   onUpdateLink: (id: string, updates: Partial<Link>) => void;
   onDeleteLink: (id: string) => void;
+  onEditLink: (link: Link) => void;
 }
 
-export const LinkCards = ({ links, onUpdateLink, onDeleteLink }: LinkCardsProps) => {
+export const LinkCards = ({ links, onUpdateLink, onDeleteLink, onEditLink }: LinkCardsProps) => {
   const getPriorityColor = (priority: string) => {
     switch (priority) {
       case "high": return "destructive";
@@ -57,7 +59,7 @@ export const LinkCards = ({ links, onUpdateLink, onDeleteLink }: LinkCardsProps)
                     <ExternalLink className="mr-2 h-4 w-4" />
                     Open Link
                   </DropdownMenuItem>
-                  <DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => onEditLink(link)}>
                     <Edit className="mr-2 h-4 w-4" />
                     Edit
                   </DropdownMenuItem>

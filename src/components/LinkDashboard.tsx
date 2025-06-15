@@ -19,13 +19,15 @@ interface LinkDashboardProps {
   categories: Category[];
   onUpdateLink: (id: string, updates: Partial<Link>) => void;
   onDeleteLink: (id: string) => void;
+  onEditLink: (link: Link) => void;
 }
 
 export const LinkDashboard = ({ 
   links, 
   categories, 
   onUpdateLink, 
-  onDeleteLink 
+  onDeleteLink,
+  onEditLink
 }: LinkDashboardProps) => {
   const [view, setView] = useState<"table" | "cards">("table");
   const [sortBy, setSortBy] = useState<"dateAdded" | "title" | "priority">("dateAdded");
@@ -163,12 +165,14 @@ export const LinkDashboard = ({
           links={filteredAndSortedLinks}
           onUpdateLink={onUpdateLink}
           onDeleteLink={onDeleteLink}
+          onEditLink={onEditLink}
         />
       ) : (
         <LinkCards
           links={filteredAndSortedLinks}
           onUpdateLink={onUpdateLink}
           onDeleteLink={onDeleteLink}
+          onEditLink={onEditLink}
         />
       )}
     </div>
