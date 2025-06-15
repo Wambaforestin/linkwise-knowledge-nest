@@ -1,11 +1,11 @@
+
 import { useState } from "react";
 import { LinkDashboard } from "@/components/LinkDashboard";
 import { AddLinkDialog } from "@/components/AddLinkDialog";
 import { EditLinkDialog } from "@/components/EditLinkDialog";
-import { CategoryManager } from "@/components/CategoryManager";
-import { Button } from "@/components/ui/button";
-import { Plus, Search } from "lucide-react";
-import { Input } from "@/components/ui/input";
+import { LinkPageHeader } from "@/components/LinkPageHeader";
+import { LinkSearch } from "@/components/LinkSearch";
+import { LinkStatsCards } from "@/components/LinkStatsCards";
 
 export interface Link {
   id: string;
@@ -71,7 +71,6 @@ const Index = () => {
 
   const [searchQuery, setSearchQuery] = useState("");
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
-  
   const [editingLink, setEditingLink] = useState<Link | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
 
@@ -99,7 +98,6 @@ const Index = () => {
     setIsEditDialogOpen(true);
   };
 
-  // Category management functions
   const addCategory = (newCategory: Omit<Category, "id">) => {
     const category: Category = {
       ...newCategory,
@@ -113,7 +111,6 @@ const Index = () => {
       category.id === id ? { ...category, ...updates } : category
     ));
     
-    // Update links that use this category
     if (updates.name) {
       const oldCategory = categories.find(c => c.id === id);
       if (oldCategory) {
@@ -127,12 +124,10 @@ const Index = () => {
   const deleteCategory = (id: string) => {
     const categoryToDelete = categories.find(c => c.id === id);
     if (categoryToDelete) {
-      // Update links that use this category to use "Uncategorized"
       setLinks(prev => prev.map(link => 
         link.category === categoryToDelete.name ? { ...link, category: "Uncategorized" } : link
       ));
       
-      // Add "Uncategorized" category if it doesn't exist
       if (!categories.some(c => c.name === "Uncategorized")) {
         setCategories(prev => [...prev.filter(c => c.id !== id), {
           id: "uncategorized",
@@ -158,69 +153,33 @@ const Index = () => {
     );
   });
 
+  const statsData = {
+    totalLinks: links.length,
+    totalCategories: categories.length,
+    highPriorityLinks: links.filter(l => l.priority === "high").length,
+    uniqueTags: new Set(links.flatMap(l => l.tags)).size
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8">
-        {/* Header */}
         <div className="flex flex-col gap-6 mb-8">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-4xl font-bold tracking-tight">LinkWise</h1>
-              <p className="text-muted-foreground mt-2">
-                Your digital reference library for organizing and discovering links
-              </p>
-            </div>
-            <div className="flex gap-2">
-              <CategoryManager
-                categories={categories}
-                onAddCategory={addCategory}
-                onUpdateCategory={updateCategory}
-                onDeleteCategory={deleteCategory}
-              />
-              <Button onClick={() => setIsAddDialogOpen(true)} className="gap-2">
-                <Plus className="h-4 w-4" />
-                Add Link
-              </Button>
-            </div>
-          </div>
+          <LinkPageHeader
+            categories={categories}
+            onAddCategory={addCategory}
+            onUpdateCategory={updateCategory}
+            onDeleteCategory={deleteCategory}
+            onAddLinkClick={() => setIsAddDialogOpen(true)}
+          />
 
-          {/* Search */}
-          <div className="relative max-w-md">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="Search links, categories, tags..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10"
-            />
-          </div>
+          <LinkSearch
+            searchQuery={searchQuery}
+            onSearchChange={setSearchQuery}
+          />
 
-          {/* Stats */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div className="bg-card rounded-lg p-4 border">
-              <div className="text-2xl font-bold">{links.length}</div>
-              <div className="text-sm text-muted-foreground">Total Links</div>
-            </div>
-            <div className="bg-card rounded-lg p-4 border">
-              <div className="text-2xl font-bold">{categories.length}</div>
-              <div className="text-sm text-muted-foreground">Categories</div>
-            </div>
-            <div className="bg-card rounded-lg p-4 border">
-              <div className="text-2xl font-bold">
-                {links.filter(l => l.priority === "high").length}
-              </div>
-              <div className="text-sm text-muted-foreground">High Priority</div>
-            </div>
-            <div className="bg-card rounded-lg p-4 border">
-              <div className="text-2xl font-bold">
-                {new Set(links.flatMap(l => l.tags)).size}
-              </div>
-              <div className="text-sm text-muted-foreground">Unique Tags</div>
-            </div>
-          </div>
+          <LinkStatsCards {...statsData} />
         </div>
 
-        {/* Main Content */}
         <LinkDashboard
           links={filteredLinks}
           categories={categories}
@@ -229,7 +188,6 @@ const Index = () => {
           onEditLink={handleEditLink}
         />
 
-        {/* Add Link Dialog */}
         <AddLinkDialog
           open={isAddDialogOpen}
           onOpenChange={setIsAddDialogOpen}
@@ -237,7 +195,6 @@ const Index = () => {
           categories={categories}
         />
 
-        {/* Edit Link Dialog */}
         <EditLinkDialog
           open={isEditDialogOpen}
           onOpenChange={setIsEditDialogOpen}
