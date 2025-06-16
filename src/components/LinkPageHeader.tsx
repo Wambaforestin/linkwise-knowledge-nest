@@ -1,8 +1,16 @@
 
 import { CategoryManager } from "@/components/CategoryManager";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { Plus, LogOut, User } from "lucide-react";
 import { Category } from "@/pages/Index";
+import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/hooks/use-toast";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface LinkPageHeaderProps {
   categories: Category[];
@@ -19,6 +27,20 @@ export const LinkPageHeader = ({
   onDeleteCategory,
   onAddLinkClick
 }: LinkPageHeaderProps) => {
+  const { user, signOut } = useAuth();
+  const { toast } = useToast();
+
+  const handleSignOut = async () => {
+    const { error } = await signOut();
+    if (error) {
+      toast({
+        title: "Error",
+        description: "Failed to sign out. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
     <div className="flex items-center justify-between">
       <div>
@@ -27,7 +49,7 @@ export const LinkPageHeader = ({
           Your digital reference library for organizing and discovering links
         </p>
       </div>
-      <div className="flex gap-2">
+      <div className="flex gap-2 items-center">
         <CategoryManager
           categories={categories}
           onAddCategory={onAddCategory}
@@ -38,6 +60,23 @@ export const LinkPageHeader = ({
           <Plus className="h-4 w-4" />
           Add Link
         </Button>
+        
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" size="icon">
+              <User className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem disabled>
+              {user?.email}
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={handleSignOut}>
+              <LogOut className="mr-2 h-4 w-4" />
+              Sign Out
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </div>
   );
