@@ -9,6 +9,7 @@ export default defineConfig(({ mode }) => ({
     host: "::",
     port: 8080,
   },
+  base: "/linkwise-knowledge-nest/",
   plugins: [
     react(),
     mode === 'development' &&
