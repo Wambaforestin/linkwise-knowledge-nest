@@ -1,7 +1,10 @@
 
 # LinkWise
 
-![LinkWise Logo](public/lovable-uploads/80f7fd34-d116-4d5e-8fdc-9992eb6c23ee.png)
+<p align="center">
+  <img src="public/lovable-uploads/80f7fd34-d116-4d5e-8fdc-9992eb6c23ee.png" alt="LinkWise Logo" width="200" />
+</p>
+
 
 A modern digital reference library for organizing and discovering your links.
 
@@ -24,6 +27,7 @@ npm run dev
 - React + TypeScript
 - Tailwind CSS
 - Vite
+- Supbase
 
 ## License
 
