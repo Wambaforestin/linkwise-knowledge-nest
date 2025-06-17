@@ -6,6 +6,8 @@ import { EditLinkDialog } from "@/components/EditLinkDialog";
 import { LinkPageHeader } from "@/components/LinkPageHeader";
 import { LinkSearch } from "@/components/LinkSearch";
 import { LinkStatsCards } from "@/components/LinkStatsCards";
+import { useLinks } from "@/hooks/useLinks";
+import { useCategories } from "@/hooks/useCategories";
 
 export interface Link {
   id: string;
@@ -28,116 +30,42 @@ export interface Category {
 }
 
 const Index = () => {
-  const [links, setLinks] = useState<Link[]>([
-    {
-      id: "1",
-      url: "https://react.dev",
-      title: "React Documentation",
-      description: "The official React documentation",
-      category: "Development",
-      tags: ["react", "documentation", "frontend"],
-      priority: "high",
-      dateAdded: new Date("2024-01-15"),
-      notes: "Essential reading for React development"
-    },
-    {
-      id: "2",
-      url: "https://tailwindcss.com",
-      title: "Tailwind CSS",
-      description: "A utility-first CSS framework",
-      category: "Development",
-      tags: ["css", "styling", "framework"],
-      priority: "medium",
-      dateAdded: new Date("2024-01-10"),
-    },
-    {
-      id: "3",
-      url: "https://research.google.com",
-      title: "Google Research",
-      description: "Latest research papers and insights",
-      category: "Research",
-      tags: ["ai", "research", "papers"],
-      priority: "high",
-      dateAdded: new Date("2024-01-20"),
-    }
-  ]);
+  const {
+    links,
+    isLoading: linksLoading,
+    addLink,
+    updateLink,
+    deleteLink
+  } = useLinks();
 
-  const [categories, setCategories] = useState<Category[]>([
-    { id: "1", name: "Development", color: "#3b82f6" },
-    { id: "2", name: "Research", color: "#10b981" },
-    { id: "3", name: "Design", color: "#f59e0b" },
-    { id: "4", name: "Business", color: "#ef4444" }
-  ]);
+  const {
+    categories,
+    isLoading: categoriesLoading,
+    addCategory,
+    updateCategory,
+    deleteCategory
+  } = useCategories();
 
   const [searchQuery, setSearchQuery] = useState("");
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [editingLink, setEditingLink] = useState<Link | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
 
-  const addLink = (newLink: Omit<Link, "id" | "dateAdded">) => {
-    const link: Link = {
-      ...newLink,
-      id: Date.now().toString(),
-      dateAdded: new Date()
-    };
-    setLinks(prev => [link, ...prev]);
-  };
-
-  const updateLink = (id: string, updates: Partial<Link>) => {
-    setLinks(prev => prev.map(link => 
-      link.id === id ? { ...link, ...updates } : link
-    ));
-  };
-
-  const deleteLink = (id: string) => {
-    setLinks(prev => prev.filter(link => link.id !== id));
-  };
-
   const handleEditLink = (link: Link) => {
     setEditingLink(link);
     setIsEditDialogOpen(true);
   };
 
-  const addCategory = (newCategory: Omit<Category, "id">) => {
-    const category: Category = {
-      ...newCategory,
-      id: Date.now().toString()
-    };
-    setCategories(prev => [...prev, category]);
+  const handleUpdateLink = (id: string, updates: Partial<Link>) => {
+    updateLink({ id, updates });
   };
 
-  const updateCategory = (id: string, updates: Partial<Category>) => {
-    setCategories(prev => prev.map(category => 
-      category.id === id ? { ...category, ...updates } : category
-    ));
-    
-    if (updates.name) {
-      const oldCategory = categories.find(c => c.id === id);
-      if (oldCategory) {
-        setLinks(prev => prev.map(link => 
-          link.category === oldCategory.name ? { ...link, category: updates.name! } : link
-        ));
-      }
-    }
+  const handleAddCategory = (newCategory: Omit<Category, "id">) => {
+    addCategory(newCategory);
   };
 
-  const deleteCategory = (id: string) => {
-    const categoryToDelete = categories.find(c => c.id === id);
-    if (categoryToDelete) {
-      setLinks(prev => prev.map(link => 
-        link.category === categoryToDelete.name ? { ...link, category: "Uncategorized" } : link
-      ));
-      
-      if (!categories.some(c => c.name === "Uncategorized")) {
-        setCategories(prev => [...prev.filter(c => c.id !== id), {
-          id: "uncategorized",
-          name: "Uncategorized",
-          color: "#6b7280"
-        }]);
-      } else {
-        setCategories(prev => prev.filter(c => c.id !== id));
-      }
-    }
+  const handleUpdateCategory = (id: string, updates: Partial<Category>) => {
+    updateCategory({ id, updates });
   };
 
   const filteredLinks = links.filter(link => {
@@ -160,14 +88,22 @@ const Index = () => {
     uniqueTags: new Set(links.flatMap(l => l.tags)).size
   };
 
+  if (linksLoading || categoriesLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8">
         <div className="flex flex-col gap-6 mb-8">
           <LinkPageHeader
             categories={categories}
-            onAddCategory={addCategory}
-            onUpdateCategory={updateCategory}
+            onAddCategory={handleAddCategory}
+            onUpdateCategory={handleUpdateCategory}
             onDeleteCategory={deleteCategory}
             onAddLinkClick={() => setIsAddDialogOpen(true)}
           />
@@ -183,7 +119,7 @@ const Index = () => {
         <LinkDashboard
           links={filteredLinks}
           categories={categories}
-          onUpdateLink={updateLink}
+          onUpdateLink={handleUpdateLink}
           onDeleteLink={deleteLink}
           onEditLink={handleEditLink}
         />
@@ -199,7 +135,7 @@ const Index = () => {
           open={isEditDialogOpen}
           onOpenChange={setIsEditDialogOpen}
           link={editingLink}
-          onUpdateLink={updateLink}
+          onUpdateLink={handleUpdateLink}
           categories={categories}
         />
       </div>
