@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
@@ -11,6 +10,15 @@ export interface Category {
   color?: string;
   parentId?: string;
 }
+
+const DEFAULT_CATEGORIES = [
+  { name: 'Work', color: '#3b82f6' },
+  { name: 'Personal', color: '#10b981' },
+  { name: 'Learning', color: '#f59e0b' },
+  { name: 'Entertainment', color: '#8b5cf6' },
+  { name: 'News', color: '#ef4444' },
+  { name: 'Tools', color: '#6b7280' },
+];
 
 export const useCategories = () => {
   const { user } = useAuth();
@@ -39,6 +47,43 @@ export const useCategories = () => {
     },
     enabled: !!user,
   });
+
+  // Create default categories for new users
+  const createDefaultCategoriesMutation = useMutation({
+    mutationFn: async () => {
+      if (!user) throw new Error('User not authenticated');
+      
+      const defaultCategoriesToInsert = DEFAULT_CATEGORIES.map(category => ({
+        user_id: user.id,
+        name: category.name,
+        color: category.color,
+        parent_id: null
+      }));
+
+      const { error } = await supabase
+        .from('categories')
+        .insert(defaultCategoriesToInsert);
+
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['categories', user?.id] });
+      toast({
+        title: "Welcome!",
+        description: "We've created some default categories to help you get started",
+      });
+    },
+    onError: (error) => {
+      console.error('Create default categories error:', error);
+    },
+  });
+
+  // Check if we need to create default categories
+  useEffect(() => {
+    if (user && !isLoading && categories.length === 0) {
+      createDefaultCategoriesMutation.mutate();
+    }
+  }, [user, isLoading, categories.length]);
 
   const addCategoryMutation = useMutation({
     mutationFn: async (newCategory: Omit<Category, 'id'>) => {
