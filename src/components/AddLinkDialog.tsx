@@ -1,6 +1,5 @@
-
 import { useState } from "react";
-import { Link, Category } from "@/pages/Index";
+import { Link, Category } from "@/types";
 import {
   Dialog,
   DialogContent,
