@@ -8,26 +8,9 @@ import { LinkSearch } from "@/components/LinkSearch";
 import { LinkStatsCards } from "@/components/LinkStatsCards";
 import { useLinks } from "@/hooks/useLinks";
 import { useCategories } from "@/hooks/useCategories";
-
-export interface Link {
-  id: string;
-  url: string;
-  title: string;
-  description?: string;
-  category: string;
-  tags: string[];
-  priority: "low" | "medium" | "high";
-  dateAdded: Date;
-  lastAccessed?: Date;
-  notes?: string;
-}
-
-export interface Category {
-  id: string;
-  name: string;
-  color?: string;
-  parentId?: string;
-}
+import { useLinkFilter } from "@/hooks/useLinkFilter";
+import { useLinkStats } from "@/hooks/useLinkStats";
+import { Link, Category } from "@/types";
 
 const Index = () => {
   const {
@@ -51,6 +34,9 @@ const Index = () => {
   const [editingLink, setEditingLink] = useState<Link | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
 
+  const filteredLinks = useLinkFilter(links, searchQuery);
+  const statsData = useLinkStats(links, categories);
+
   const handleEditLink = (link: Link) => {
     setEditingLink(link);
     setIsEditDialogOpen(true);
@@ -66,26 +52,6 @@ const Index = () => {
 
   const handleUpdateCategory = (id: string, updates: Partial<Category>) => {
     updateCategory({ id, updates });
-  };
-
-  const filteredLinks = links.filter(link => {
-    if (!searchQuery) return true;
-    
-    const query = searchQuery.toLowerCase();
-    return (
-      link.title.toLowerCase().includes(query) ||
-      link.description?.toLowerCase().includes(query) ||
-      link.category.toLowerCase().includes(query) ||
-      link.tags.some(tag => tag.toLowerCase().includes(query)) ||
-      link.notes?.toLowerCase().includes(query)
-    );
-  });
-
-  const statsData = {
-    totalLinks: links.length,
-    totalCategories: categories.length,
-    highPriorityLinks: links.filter(l => l.priority === "high").length,
-    uniqueTags: new Set(links.flatMap(l => l.tags)).size
   };
 
   if (linksLoading || categoriesLoading) {

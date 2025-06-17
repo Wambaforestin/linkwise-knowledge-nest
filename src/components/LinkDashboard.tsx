@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { Link, Category } from "@/pages/Index";
+import { Link, Category } from "@/types";
 import { LinkTable } from "./LinkTable";
 import { LinkCards } from "./LinkCards";
 import { Button } from "@/components/ui/button";

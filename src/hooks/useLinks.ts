@@ -1,21 +1,8 @@
-
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
-
-export interface Link {
-  id: string;
-  url: string;
-  title: string;
-  description?: string;
-  category: string;
-  tags: string[];
-  priority: "low" | "medium" | "high";
-  dateAdded: Date;
-  lastAccessed?: Date;
-  notes?: string;
-}
+import { Link } from '@/types';
 
 export const useLinks = () => {
   const { user } = useAuth();

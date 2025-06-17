@@ -2,7 +2,7 @@
 import { CategoryManager } from "@/components/CategoryManager";
 import { Button } from "@/components/ui/button";
 import { Plus, LogOut, User } from "lucide-react";
-import { Category } from "@/pages/Index";
+import { Category } from "@/types";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import {

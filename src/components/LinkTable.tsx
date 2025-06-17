@@ -1,5 +1,5 @@
 
-import { Link } from "@/pages/Index";
+import { Link } from "@/types";
 import {
   Table,
   TableBody,
