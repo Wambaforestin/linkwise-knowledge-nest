@@ -99,31 +99,6 @@ LinkWise is built with modern, industry-standard technologies:
 - **TanStack Query** - Powerful data synchronization for React
 - **React Hook Form** - Performant forms with easy validation
 
-## 📱 Features in Detail
-
-### Link Management
-- Add links with titles, descriptions, and metadata
-- Categorize links for better organization
-- Add custom tags for flexible filtering
-- Set priority levels for important links
-
-### Search & Filter
-- Full-text search across titles and descriptions
-- Filter by categories, tags, and priority levels
-- Sort by date added, title, or priority
-- Advanced pagination with customizable page sizes
-
-### Data Export
-- Export filtered results to CSV format for spreadsheet analysis
-- Export to JSON format for data integration
-- Maintain data structure and relationships in exports
-
-### User Experience
-- Responsive design that works on all devices
-- Dark/light mode support (coming soon)
-- Keyboard shortcuts for power users
-- Intuitive drag-and-drop interfaces
-
 ## 🔧 Configuration
 
 ### Environment Variables
@@ -140,22 +115,6 @@ LinkWise is highly customizable. You can modify:
 - Default categories in `src/constants/categories.ts`
 - Component styles in respective component files
 
-## 🤝 Contributing
-
-We welcome contributions! Here's how you can help:
-
-1. **Fork the repository**
-2. **Create a feature branch** (`git checkout -b feature/amazing-feature`)
-3. **Commit your changes** (`git commit -m 'Add amazing feature'`)
-4. **Push to the branch** (`git push origin feature/amazing-feature`)
-5. **Open a Pull Request**
-
-### Development Guidelines
-- Follow TypeScript best practices
-- Write meaningful commit messages
-- Add tests for new features
-- Ensure responsive design compatibility
-- Follow the existing code style
 
 ## 📄 License
 
@@ -172,12 +131,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 <p align="center">
   Made with ❤️ using modern web technologies
-</p>
-
-<p align="center">
-  <a href="https://github.com/your-username/linkwise-knowledge-nest/issues">Report Bug</a>
-  ·
-  <a href="https://github.com/your-username/linkwise-knowledge-nest/issues">Request Feature</a>
-  ·
-  <a href="https://github.com/your-username/linkwise-knowledge-nest/discussions">Discussions</a>
 </p>
