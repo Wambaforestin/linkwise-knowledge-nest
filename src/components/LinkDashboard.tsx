@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Link, Category } from "@/types";
 import { LinkTable } from "./LinkTable";
@@ -65,18 +64,6 @@ export const LinkDashboard = ({
     setCurrentPage(1);
   };
 
-  const exportData = () => {
-    const dataStr = JSON.stringify(filteredAndSortedLinks, null, 2);
-    const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
-    
-    const exportFileDefaultName = 'linkwise-export.json';
-    
-    const linkElement = document.createElement('a');
-    linkElement.setAttribute('href', dataUri);
-    linkElement.setAttribute('download', exportFileDefaultName);
-    linkElement.click();
-  };
-
   return (
     <div className="space-y-4">
       <LinkDashboardControls
@@ -91,7 +78,7 @@ export const LinkDashboard = ({
         itemsPerPage={itemsPerPage}
         setItemsPerPage={setItemsPerPage}
         categories={categories}
-        onExportData={exportData}
+        filteredLinks={filteredAndSortedLinks}
         handleFilterChange={handleFilterChange}
         handleItemsPerPageChange={handleItemsPerPageChange}
       />

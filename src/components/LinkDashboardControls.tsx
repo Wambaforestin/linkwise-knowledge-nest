@@ -7,9 +7,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
-import { Table2, Grid3X3, Filter, Download } from "lucide-react";
-import { Category } from "@/types";
+import { Table2, Grid3X3, Filter, Download, ChevronDown } from "lucide-react";
+import { Category, Link } from "@/types";
 
 interface LinkDashboardControlsProps {
   view: "table" | "cards";
@@ -23,7 +29,7 @@ interface LinkDashboardControlsProps {
   itemsPerPage: number;
   setItemsPerPage: (items: number) => void;
   categories: Category[];
-  onExportData: () => void;
+  filteredLinks: Link[];
   handleFilterChange: (setter: React.Dispatch<React.SetStateAction<string>>, value: string) => void;
   handleItemsPerPageChange: (value: string) => void;
 }
@@ -39,10 +45,44 @@ export const LinkDashboardControls = ({
   setFilterPriority,
   itemsPerPage,
   categories,
-  onExportData,
+  filteredLinks,
   handleFilterChange,
   handleItemsPerPageChange
 }: LinkDashboardControlsProps) => {
+  const exportToJSON = () => {
+    const dataStr = JSON.stringify(filteredLinks, null, 2);
+    const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+    
+    const linkElement = document.createElement('a');
+    linkElement.setAttribute('href', dataUri);
+    linkElement.setAttribute('download', 'linkwise-export.json');
+    linkElement.click();
+  };
+
+  const exportToCSV = () => {
+    const headers = ['Title', 'URL', 'Category', 'Priority', 'Tags', 'Description', 'Notes', 'Date Added'];
+    const csvContent = [
+      headers.join(','),
+      ...filteredLinks.map(link => [
+        `"${link.title.replace(/"/g, '""')}"`,
+        `"${link.url}"`,
+        `"${link.category}"`,
+        `"${link.priority}"`,
+        `"${link.tags.join('; ')}"`,
+        `"${(link.description || '').replace(/"/g, '""')}"`,
+        `"${(link.notes || '').replace(/"/g, '""')}"`,
+        `"${link.dateAdded.toLocaleDateString()}"`
+      ].join(','))
+    ].join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', 'linkwise-export.csv');
+    link.click();
+  };
+
   return (
     <div className="flex flex-wrap items-center gap-4 p-4 bg-card rounded-lg border">
       {/* View Toggle */}
@@ -120,11 +160,24 @@ export const LinkDashboardControls = ({
         </SelectContent>
       </Select>
 
-      {/* Export */}
-      <Button variant="outline" size="sm" onClick={onExportData} className="gap-2">
-        <Download className="h-4 w-4" />
-        Export
-      </Button>
+      {/* Export Dropdown */}
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="outline" size="sm" className="gap-2">
+            <Download className="h-4 w-4" />
+            Export
+            <ChevronDown className="h-4 w-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent>
+          <DropdownMenuItem onClick={exportToJSON}>
+            Export as JSON
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={exportToCSV}>
+            Export as CSV
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
 
       {/* Active Filters */}
       <div className="flex items-center gap-2 ml-auto">
