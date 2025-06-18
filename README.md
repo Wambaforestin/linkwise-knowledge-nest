@@ -10,7 +10,7 @@
 </p>
 
 <p align="center">
-  <img src="/lovable-uploads/560f2be1-2e3e-4b23-8d59-c6a2e5e84ae6.png" alt="LinkWise Dashboard Screenshot" width="800" />
+  <img src="public/lovable-uploads/560f2be1-2e3e-4b23-8d59-c6a2e5e84ae6.png" alt="LinkWise Dashboard Screenshot" width="800" />
 </p>
 
 ---
