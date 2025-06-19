@@ -11,6 +11,18 @@ export const PasswordStrengthIndicator = ({ password }: PasswordStrengthIndicato
       test: password.length >= 8,
       text: 'At least 8 characters',
     },
+    {
+      test: /[A-Z]/.test(password),
+      text: 'Contains uppercase letter',
+    },
+    {
+      test: /[a-z]/.test(password),
+      text: 'Contains lowercase letter',
+    },
+    {
+      test: /[0-9]/.test(password),
+      text: 'Contains number',
+    },
   ];
 
   const isValid = requirements.every(req => req.test);
