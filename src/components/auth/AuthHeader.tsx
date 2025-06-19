@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ArrowLeft } from 'lucide-react';
 
-type AuthMode = 'signin' | 'signup' | 'forgot-password' | 'verify-otp' | 'new-password';
+type AuthMode = 'signin' | 'signup' | 'forgot-password' | 'new-password';
 
 interface AuthHeaderProps {
   mode: AuthMode;
@@ -15,7 +15,6 @@ export const AuthHeader = ({ mode, onBack }: AuthHeaderProps) => {
     switch (mode) {
       case 'signup': return 'Create Account';
       case 'forgot-password': return 'Reset Password';
-      case 'verify-otp': return 'Verify Code';
       case 'new-password': return 'Set New Password';
       default: return 'Welcome Back';
     }
@@ -24,14 +23,13 @@ export const AuthHeader = ({ mode, onBack }: AuthHeaderProps) => {
   const getDescription = () => {
     switch (mode) {
       case 'signup': return 'Sign up to start organizing your links';
-      case 'forgot-password': return 'Enter your email to receive a verification code';
-      case 'verify-otp': return 'Enter the verification code from your email';
+      case 'forgot-password': return 'Enter your email to receive a password reset link';
       case 'new-password': return 'Choose a new secure password';
       default: return 'Sign in to access your digital reference library';
     }
   };
 
-  const showBackButton = mode === 'forgot-password' || mode === 'verify-otp';
+  const showBackButton = mode === 'forgot-password';
 
   return (
     <CardHeader className="text-center">

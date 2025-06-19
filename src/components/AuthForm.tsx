@@ -4,37 +4,38 @@ import { Card, CardContent } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { PrivacyPolicyModal } from './PrivacyPolicyModal';
 import { TermsOfServiceModal } from './TermsOfServiceModal';
-import { OtpInput } from './OtpInput';
 import { NewPasswordForm } from './NewPasswordForm';
 import { SignInForm } from './auth/SignInForm';
 import { SignUpForm } from './auth/SignUpForm';
 import { ForgotPasswordForm } from './auth/ForgotPasswordForm';
 import { AuthHeader } from './auth/AuthHeader';
 
-type AuthMode = 'signin' | 'signup' | 'forgot-password' | 'verify-otp' | 'new-password';
+type AuthMode = 'signin' | 'signup' | 'forgot-password' | 'new-password';
 
 export const AuthForm = () => {
   const [mode, setMode] = useState<AuthMode>('signin');
   const [showPrivacyModal, setShowPrivacyModal] = useState(false);
   const [showTermsModal, setShowTermsModal] = useState(false);
-  const [resetEmail, setResetEmail] = useState('');
   const { toast } = useToast();
 
   // Check URL parameters for password reset flow
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.get('reset') === 'true') {
-      setMode('verify-otp');
+      setMode('new-password');
+      toast({
+        title: "Reset Password",
+        description: "Please enter your new password below.",
+      });
     }
-  }, []);
+  }, [toast]);
 
-  const handleForgotPasswordSuccess = (email: string) => {
-    setResetEmail(email);
-    setMode('verify-otp');
-  };
-
-  const handleOtpSuccess = () => {
-    setMode('new-password');
+  const handleForgotPasswordSuccess = () => {
+    toast({
+      title: "Reset Email Sent!",
+      description: "Check your email for a password reset link.",
+    });
+    setMode('signin');
   };
 
   const handlePasswordUpdateSuccess = () => {
@@ -71,15 +72,6 @@ export const AuthForm = () => {
           <ForgotPasswordForm
             onSwitchToSignIn={() => setMode('signin')}
             onSuccess={handleForgotPasswordSuccess}
-          />
-        );
-      
-      case 'verify-otp':
-        return (
-          <OtpInput
-            email={resetEmail}
-            onSuccess={handleOtpSuccess}
-            onBack={() => setMode('forgot-password')}
           />
         );
       

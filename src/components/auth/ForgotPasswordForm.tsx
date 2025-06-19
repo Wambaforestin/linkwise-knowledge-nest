@@ -9,7 +9,7 @@ import { Loader2 } from 'lucide-react';
 
 interface ForgotPasswordFormProps {
   onSwitchToSignIn: () => void;
-  onSuccess: (email: string) => void;
+  onSuccess: () => void;
 }
 
 export const ForgotPasswordForm = ({ onSwitchToSignIn, onSuccess }: ForgotPasswordFormProps) => {
@@ -31,11 +31,7 @@ export const ForgotPasswordForm = ({ onSwitchToSignIn, onSuccess }: ForgotPasswo
           variant: "destructive",
         });
       } else {
-        toast({
-          title: "Reset Email Sent!",
-          description: "Check your email for a 6-digit verification code. The code will expire in 1 hour.",
-        });
-        onSuccess(email);
+        onSuccess();
       }
     } catch (error) {
       toast({
@@ -65,7 +61,7 @@ export const ForgotPasswordForm = ({ onSwitchToSignIn, onSuccess }: ForgotPasswo
         
         <Button type="submit" className="w-full" disabled={loading}>
           {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-          Send Verification Code
+          Send Reset Link
         </Button>
       </form>
       
