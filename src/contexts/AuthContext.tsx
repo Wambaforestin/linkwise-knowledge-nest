@@ -1,4 +1,3 @@
-
 import { createContext, useContext, useEffect, useState } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
@@ -89,7 +88,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const resetPassword = async (email: string) => {
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `https://wambaforestin.github.io/linkwise-knowledge-nest/auth?reset=true`,
+      redirectTo: `https://wambaforestin.github.io/linkwise-knowledge-nest/recover`,
     });
     return { error };
   };

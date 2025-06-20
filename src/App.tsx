@@ -21,6 +21,7 @@ const App = () => (
         <BrowserRouter basename="/linkwise-knowledge-nest">
           <Routes>
             <Route path="/auth" element={<Auth />} />
+            <Route path="/recover" element={<Auth />} />
             <Route path="/" element={
               <ProtectedRoute>
                 <Index />

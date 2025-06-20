@@ -1,7 +1,7 @@
-
 import { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
+import { useLocation } from 'react-router-dom';
 import { PrivacyPolicyModal } from './PrivacyPolicyModal';
 import { TermsOfServiceModal } from './TermsOfServiceModal';
 import { NewPasswordForm } from './NewPasswordForm';
@@ -17,18 +17,22 @@ export const AuthForm = () => {
   const [showPrivacyModal, setShowPrivacyModal] = useState(false);
   const [showTermsModal, setShowTermsModal] = useState(false);
   const { toast } = useToast();
+  const location = useLocation();
 
-  // Check URL parameters for password reset flow
+  // Check URL parameters and route for password reset flow
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get('reset') === 'true') {
+    const isRecoverRoute = location.pathname === '/recover';
+    const hasResetParam = urlParams.get('reset') === 'true';
+    
+    if (isRecoverRoute || hasResetParam) {
       setMode('new-password');
       toast({
         title: "Reset Password",
         description: "Please enter your new password below.",
       });
     }
-  }, [toast]);
+  }, [toast, location.pathname]);
 
   const handleForgotPasswordSuccess = () => {
     toast({
